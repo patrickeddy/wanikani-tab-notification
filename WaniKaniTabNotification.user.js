@@ -19,7 +19,7 @@ $(document).ready(function () {
    * If you supply your API key, the number of reviews will be prepended to your message 
    * and this script will work across the site
    */
-  var api_key = 'a1352111a93a51d9a2fbcd5337e310d4';
+  var api_key = 'YOUR_API_KEY';
   var checkEvery = 2; // check for reviews every 2 minutes (default)
   /*
    * === ADVANCED ===
