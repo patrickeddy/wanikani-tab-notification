@@ -37,7 +37,6 @@ $(document).ready(function () {
   var titleAnimation;
   initGM();
   checkReviews();
-  
   function initGM() {
     GM_registerMenuCommand('Tab Notification: Set API Key', function () {
       var apiKeyFromLS = GM_getValue('WKAPIKey');
@@ -52,18 +51,22 @@ $(document).ready(function () {
   function checkReviews() {
     if (hasAPIKey() && window.location.href !== ('https://' + window.location.host + '/review/session')) {
       console.log('API key specified, getting reviews...');
-      checkTimer = setInterval(function () {
-        getReviewNumber();
-        if (reviews > 0) {
-          displayTitle();
-          clearInterval(checkTimer);
-        }
-      }, (checkEvery * 60000));
+      getReviews();
+      checkTimer = setInterval(getReviews, (checkEvery * 60000));
     } else if (window.location.href == ('https://' + window.location.host + '/') || window.location.href == ('https://' + window.location.host + '/dashboard')) {
       if ($reviewElement.length > 0 && $reviewElement.html().indexOf('ago') >= 0 || $reviewElement.html().indexOf('Available Now') >= 0) {
         displayTitle();
       }
     }
+  }
+  function getReviews() {
+    getReviewNumber();
+    setTimeout(function () {
+      if (reviews > 0) {
+        displayTitle();
+        clearInterval(checkTimer);
+      }
+    }, 1000);
   }
   function displayTitle() {
     console.log('Displaying reviews');
@@ -98,6 +101,6 @@ $(document).ready(function () {
     }
   }
   function hasAPIKey() {
-    return api_key !== 'null';
+    return typeof api_key !== 'null';
   }
 });
