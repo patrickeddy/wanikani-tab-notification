@@ -98,6 +98,6 @@ $(document).ready(function () {
     }
   }
   function hasAPIKey() {
-    return api_key !== '';
+    return api_key !== 'null';
   }
 });
