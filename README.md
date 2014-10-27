@@ -7,5 +7,5 @@ Simple userscript for notification on tab when reviews are available on the dash
 3. Install the script when prompted.
 
 ###Changelog
-1.1 - You can now specify your API key for extra functionality. Review numbers will show up on the tab and notification will work across the site (instead of just the dash).
-1.0 - Inital release
++ 1.1 - You can now specify your API key for extra functionality. Review numbers will show up on the tab and notification will work across the site (instead of just the dash).
++ 1.0 - Inital release
