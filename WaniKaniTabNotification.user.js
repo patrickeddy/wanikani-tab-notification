@@ -101,6 +101,6 @@ $(document).ready(function () {
     }
   }
   function hasAPIKey() {
-    return typeof api_key !== 'null';
+    return (typeof api_key !== 'undefined' && api_key !== 'null');
   }
 });
