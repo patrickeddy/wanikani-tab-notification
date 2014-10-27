@@ -33,19 +33,17 @@ $(document).ready(function () {
   var titleAnimation;
   checkReviews();
   if (!hasAPIKey())
-  $reviewElement.bind('DOMSubtreeModified', checkReviews);
+    $reviewElement.bind('DOMSubtreeModified', checkReviews);
   function checkReviews() {
     if (hasAPIKey() && window.location.href !== ('https://' + window.location.host + '/review/session')) {
       console.log('API key specified, getting reviews with key...');
-      if (typeof this.checkTimer === 'undefined') {
-        checkTimer = setInterval(function () {
-          getReviewNumber();
-          if (reviews > 0) {
-            displayTitle();
-            clearInterval(checkTimer);
-          }
-        }, (checkEvery * 60000));
-      }
+      checkTimer = setInterval(function () {
+        getReviewNumber();
+        if (reviews > 0) {
+          displayTitle();
+          clearInterval(checkTimer);
+        }
+      }, (checkEvery * 60000));
     } else if (window.location.href == ('https://' + window.location.host + '/') || window.location.href == ('https://' + window.location.host + '/dashboard')) {
       if ($reviewElement.length > 0 && $reviewElement.html().indexOf('ago') >= 0 || $reviewElement.html().indexOf('Available Now') >= 0) {
         displayTitle();
@@ -53,19 +51,17 @@ $(document).ready(function () {
     }
   }
   function displayTitle() {
-    console.log("Displaying reviews");
-    if (typeof titleAnimation === 'undefined') {
-      titleAnimation = setInterval(function () {
-        if (reviews !== 0) {
-          document.title = '(' + reviews + ') ' + titleMessage;
-        } else {
-          document.title = titleMessage;
-        }
-        setTimeout(function () {
-          document.title = previousWindowTitle;
-        }, (speed * 1000) / 2);
-      }, (speed * 1000));
-    }
+    console.log('Displaying reviews');
+    titleAnimation = setInterval(function () {
+      if (reviews !== 0) {
+        document.title = '(' + reviews + ') ' + titleMessage;
+      } else {
+        document.title = titleMessage;
+      }
+      setTimeout(function () {
+        document.title = previousWindowTitle;
+      }, (speed * 1000) / 2);
+    }, (speed * 1000));
   }
   function getReviewNumber() {
     console.log('Getting the amount of reviews');
@@ -75,7 +71,12 @@ $(document).ready(function () {
         url: 'https://www.wanikani.com/api/user/' + api_key + '/study-queue?callback=?',
         dataType: 'JSON',
         success: function (data) {
-          reviews = data.requested_information.reviews_available;
+          if (typeof data.requested_information !== "undefined") {
+            reviews = data.requested_information.reviews_available;
+          } else {
+            alert('WaniKani Notification: API key invalid. Please enter a valid API key');
+            clearInterval(checkTimer);
+          }
         }
       });
       console.log(reviews + ' reviews found.');
