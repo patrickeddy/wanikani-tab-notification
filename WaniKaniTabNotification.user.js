@@ -4,7 +4,7 @@
 // @description Simple notification on your browser tab when reviews are available.
 // @include     https://www.wanikani.com/*
 // @author      Bleu
-// @version     1.0
+// @version     1.1
 // @grant       none
 // ==/UserScript==
 $(document).ready(function () {
@@ -26,19 +26,26 @@ $(document).ready(function () {
    * Don't touch if you don't know what you're doing
    *
    */
-  var $reviewElement = $('time.timeago');
   var reviews = 0;
+  var $reviewElement = $('time.timeago');
+  var previousWindowTitle = document.title;
+  var checkTimer;
+  var titleAnimation;
   checkReviews();
+  if (!hasAPIKey())
   $reviewElement.bind('DOMSubtreeModified', checkReviews);
   function checkReviews() {
     if (hasAPIKey() && window.location.href !== ('https://' + window.location.host + '/review/session')) {
       console.log('API key specified, getting reviews with key...');
-      this.checkTimer = setInterval(function () {
-        getReviewNumber();
-        if (reviews > 0) {
-          displayTitle();
-        }
-      }, (checkEvery * 60000));
+      if (typeof this.checkTimer === 'undefined') {
+        checkTimer = setInterval(function () {
+          getReviewNumber();
+          if (reviews > 0) {
+            displayTitle();
+            clearInterval(checkTimer);
+          }
+        }, (checkEvery * 60000));
+      }
     } else if (window.location.href == ('https://' + window.location.host + '/') || window.location.href == ('https://' + window.location.host + '/dashboard')) {
       if ($reviewElement.length > 0 && $reviewElement.html().indexOf('ago') >= 0 || $reviewElement.html().indexOf('Available Now') >= 0) {
         displayTitle();
@@ -46,18 +53,19 @@ $(document).ready(function () {
     }
   }
   function displayTitle() {
-    this.titleAnimation = setInterval(function () {
-      if (reviews !== 0) {
-        console.log('Reviews number available. Displaying title');
-        document.title = '(' + reviews + ') ' + titleMessage;
-      } else {
-        console.log('Review number unavailable. Displaying default title...');
-        document.title = titleMessage;
-      }
-      setTimeout(function () {
-        document.title = 'WaniKani / Dashboard';
-      }, (speed * 1000) / 2);
-    }, (speed * 1000));
+    console.log("Displaying reviews");
+    if (typeof titleAnimation === 'undefined') {
+      titleAnimation = setInterval(function () {
+        if (reviews !== 0) {
+          document.title = '(' + reviews + ') ' + titleMessage;
+        } else {
+          document.title = titleMessage;
+        }
+        setTimeout(function () {
+          document.title = previousWindowTitle;
+        }, (speed * 1000) / 2);
+      }, (speed * 1000));
+    }
   }
   function getReviewNumber() {
     console.log('Getting the amount of reviews');
@@ -68,8 +76,7 @@ $(document).ready(function () {
         dataType: 'JSON',
         success: function (data) {
           reviews = data.requested_information.reviews_available;
-        },
-        async: false
+        }
       });
       console.log(reviews + ' reviews found.');
     }
