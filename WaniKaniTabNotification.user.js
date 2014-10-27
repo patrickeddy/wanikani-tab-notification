@@ -2,7 +2,7 @@
 // @name        WaniKani Tab Notification
 // @namespace   http://patrickeddy.com
 // @description Simple notification on your browser tab when reviews are available.
-// @include	https://www.wanikani.com/*
+// @include	https://www.wanikani.com/
 // @include     https://www.wanikani.com/dashboard
 // @author      Bleu
 // @version     1.0
