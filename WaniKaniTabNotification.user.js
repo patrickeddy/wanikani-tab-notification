@@ -5,7 +5,10 @@
 // @include     https://www.wanikani.com/*
 // @author      Bleu
 // @version     1.1
-// @grant       none
+// @grant       GM_getValue
+// @grant       GM_setValue
+// @grant       GM_registerMenuCommand
+// @require     http://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js
 // ==/UserScript==
 $(document).ready(function () {
   /*
@@ -19,7 +22,7 @@ $(document).ready(function () {
    * If you supply your API key, the number of reviews will be prepended to your message 
    * and this script will work across the site
    */
-  var api_key = 'YOU_API_KEY';
+  var api_key = GM_getValue('WKAPIKey');
   var checkEvery = 2; // check for reviews every 2 minutes (default)
   /*
    * === ADVANCED ===
@@ -31,12 +34,22 @@ $(document).ready(function () {
   var previousWindowTitle = document.title;
   var checkTimer;
   var titleAnimation;
+  initGM();
   checkReviews();
+  function initGM() {
+    GM_registerMenuCommand('Tab Notification: Set API Key', function () {
+      var apiKeyFromLS = GM_getValue('WKAPIKey');
+      var keyPrompt = prompt('Edit the API key', apiKeyFromLS);
+      if (typeof keyPrompt !== 'string')
+      keyPrompt = String(keyPrompt);
+      GM_setValue('WKAPIKey', keyPrompt);
+    });
+  }
   if (!hasAPIKey())
-    $reviewElement.bind('DOMSubtreeModified', checkReviews);
+  $reviewElement.bind('DOMSubtreeModified', checkReviews);
   function checkReviews() {
     if (hasAPIKey() && window.location.href !== ('https://' + window.location.host + '/review/session')) {
-      console.log('API key specified, getting reviews with key...');
+      console.log('API key specified, getting reviews...');
       checkTimer = setInterval(function () {
         getReviewNumber();
         if (reviews > 0) {
@@ -65,13 +78,12 @@ $(document).ready(function () {
   }
   function getReviewNumber() {
     console.log('Getting number of reviews');
-    if (hasAPIKey()) {
       $.ajax({
         type: 'GET',
         url: 'https://www.wanikani.com/api/user/' + api_key + '/study-queue?callback=?',
         dataType: 'JSON',
         success: function (data) {
-          if (typeof data.requested_information !== "undefined") {
+          if (typeof data.requested_information !== 'undefined') {
             reviews = data.requested_information.reviews_available;
             console.log(reviews + ' reviews found.');
           } else {
@@ -80,9 +92,8 @@ $(document).ready(function () {
           }
         }
       });
-    }
   }
   function hasAPIKey() {
-    return api_key !== 'YOUR_API_KEY';
+    return  api_key !== "null";
   }
 });
