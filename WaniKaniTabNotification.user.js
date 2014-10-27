@@ -5,6 +5,7 @@
 // @include     https://www.wanikani.com/*
 // @author      Bleu
 // @version     1.1
+// @grant       XMLHttpRequest
 // @grant       GM_getValue
 // @grant       GM_setValue
 // @grant       GM_registerMenuCommand
@@ -36,6 +37,7 @@ $(document).ready(function () {
   var titleAnimation;
   initGM();
   checkReviews();
+  
   function initGM() {
     GM_registerMenuCommand('Tab Notification: Set API Key', function () {
       var apiKeyFromLS = GM_getValue('WKAPIKey');
@@ -78,10 +80,11 @@ $(document).ready(function () {
   }
   function getReviewNumber() {
     console.log('Getting number of reviews');
+    if (hasAPIKey()) {
       $.ajax({
         type: 'GET',
-        url: 'https://www.wanikani.com/api/user/' + api_key + '/study-queue?callback=?',
-        dataType: 'JSON',
+        url: 'https://www.wanikani.com/api/user/' + api_key + '/study-queue',
+        dataType: 'json',
         success: function (data) {
           if (typeof data.requested_information !== 'undefined') {
             reviews = data.requested_information.reviews_available;
@@ -92,8 +95,9 @@ $(document).ready(function () {
           }
         }
       });
+    }
   }
   function hasAPIKey() {
-    return  api_key !== "null";
+    return api_key !== '';
   }
 });
