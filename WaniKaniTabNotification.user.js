@@ -4,7 +4,7 @@
 // @description Simple notification on your browser tab when reviews are available.
 // @include     https://www.wanikani.com/*
 // @author      Bleu
-// @version     1.1
+// @version     1.0
 // @grant       none
 // ==/UserScript==
 $(document).ready(function () {
@@ -19,8 +19,8 @@ $(document).ready(function () {
    * If you supply your API key, the number of reviews will be prepended to your message 
    * and this script will work across the site
    */
-  var api_key = 'YOUR_API_KEY';
-  var checkEvery = 5; // check for reviews every 5 minutes (default)
+  var api_key = 'a1352111a93a51d9a2fbcd5337e310d4';
+  var checkEvery = 2; // check for reviews every 2 minutes (default)
   /*
    * === ADVANCED ===
    * Don't touch if you don't know what you're doing
@@ -31,8 +31,8 @@ $(document).ready(function () {
   checkReviews();
   $reviewElement.bind('DOMSubtreeModified', checkReviews);
   function checkReviews() {
-    if (hasAPIKey()) {
-      console.log('API specified, getting reviews with key...');
+    if (hasAPIKey() && window.location.href !== ('https://' + window.location.host + '/review/session')) {
+      console.log('API key specified, getting reviews with key...');
       this.checkTimer = setInterval(function () {
         getReviewNumber();
         if (reviews > 0) {
