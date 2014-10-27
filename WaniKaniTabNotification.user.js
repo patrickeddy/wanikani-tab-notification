@@ -82,7 +82,6 @@ $(document).ready(function () {
     }, (speed * 1000));
   }
   function getReviewNumber() {
-    console.log('Getting number of reviews');
     if (hasAPIKey()) {
       $.ajax({
         type: 'GET',
@@ -90,8 +89,10 @@ $(document).ready(function () {
         dataType: 'json',
         success: function (data) {
           if (typeof data.requested_information !== 'undefined') {
-            reviews = data.requested_information.reviews_available;
-            console.log(reviews + ' reviews found.');
+               reviews = data.requested_information.reviews_available;
+            if (reviews > 0){
+               console.log(reviews + ' reviews found.');
+            }
           } else {
             alert('WaniKani Notification: API key invalid. Please enter a valid API key');
             clearInterval(checkTimer);
