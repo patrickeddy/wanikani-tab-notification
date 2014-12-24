@@ -3,7 +3,8 @@
 // @namespace   http://patrickeddy.com
 // @description Simple notification on your browser tab when reviews are available.
 // @include     https://www.wanikani.com/*
-// @author      Bleu
+// @include     http://www.wanikani.com/*
+// @author      Patrick Eddy 
 // @version     1.1
 // @grant       XMLHttpRequest
 // @grant       GM_getValue
